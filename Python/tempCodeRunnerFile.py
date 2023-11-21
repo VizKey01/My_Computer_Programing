@@ -1,0 +1,1 @@
+if(bool(bills[name])) : bills = bills.get(name, 0)
