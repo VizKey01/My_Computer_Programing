@@ -20,7 +20,6 @@ long long CP::map_bst<KeyT, MappedT, CompareT>::sum_leaves_depth() {
   }
   if(mSize == 1) return 0;
   temp += my_recur(mRoot->left, 1);
-  temp += my_recur(mRoot->right, 1);
   
   return temp;
 }
