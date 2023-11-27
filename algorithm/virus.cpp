@@ -42,7 +42,29 @@ queue<NODE> qn;
 //--------------------- Works zone ------------------------
 
 void sol() {
-    
+    int n, m, base[2] = {0, 1};
+    cin >> n >> m;
+    m = 1 << m;
+    cout << m << endl;
+    nloop(i) {
+        int cnt = 0, v[m], chk = 0;
+        string ans;
+        mloop(j){
+            cin >> v[j];
+            if(m == 2 && v[j] == base[j]) chk++;
+            else if(j % 2 != 0 && v[j] != abs(v[j - 1] - 1)){
+                ans = "no";cnt++;
+            }
+        }
+        if(!cnt){
+            if(chk != 2 && m == 2){
+                cout << "no" << endl;
+            }
+            else cout << "yes" << endl;
+        }
+        else cout << ans << endl;
+
+    }
 
 }
 

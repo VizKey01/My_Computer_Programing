@@ -41,33 +41,39 @@ queue<NODE> qn;
 
 //--------------------- Works zone ------------------------
 
-void cal(vector<int> &v, int num, int cnt, int n, int m, bool chk) {
-    if(num == n) { // counter complete
-        if(chk) 
-            aloop(v) 
-                cout << itr << endl; 
+void cal(vector<int> &v, vector<int> &vm, int cnt, int n, vector<bool> &chk) {
+    
+    if(cnt == n) {
+        aloop(v) 
+            cout << itr << ' ';
+        cout << endl;
+        return ;
     }
-    else {
-        if(cnt == m) chk = true; // complete bits
-        num++;
-        cnt++;
 
-        cal(v.push_back, num, cnt, n, m, chk);  
-        cal(v, num, cnt, n, m, chk); 
+    for(int i = 0; i < n; i++) {
+        if(chk[i] == false && (vm[i] == - 1 || chk[vm[i]] == true)){
+            // check element is not already used and no constraint
+            v.push_back(i);
+            chk[i] = true;
+            cal(v, vm, cnt + 1, n, chk);
+            v.pop_back(); // back tracking
+            chk[i] = false; 
+        }
     }
 }
 
 void sol() {
     int n ,m, cnt = 0;
-    vector<pi> vm;
     cin >> n >> m;
+    vector<int> vm(n, -1);
     mloop(i) {
         int x, y;
         cin >> x >> y;
-        vm.push_back({x,y});
+        vm[y] = x;
     }
     vector<int> v;
-    cal(v, 0, cnt, n, m, false);
+    vector<bool> chk(n, false);
+    cal(v, vm, cnt, n, chk);
 }
 
 int main() {

@@ -3,9 +3,12 @@
 
 #include <vector>
 #include "queue.h"
+#include <algorithm>
 
 template <typename T>
 void CP::queue<T>::remove_many(std::vector<size_t> pos) {
+  std::sort(pos.begin(), pos.end()); //WTFFF THIs line is eating my 50 score from me ahhhhhhhhhhhhh
+
   auto it = pos.begin();
   int n = mSize;
   int m = mSize - pos.size();
