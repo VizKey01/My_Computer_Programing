@@ -17,21 +17,25 @@ using namespace std;
 #define fs first
 #define se second
 #define DEBUG 1
-const int big = 1e5+7;
+const int big = 1e6+7;
 const ll INF = 1e9+7;
 
 
 //--------------------- Variable zone ------------------------
 int start,finish;
-priority_queue<pi> pq;
+priority_queue<pi, vector<pi>, greater<pi>> pq;
 vector<int> d8x = {1, -1, 0, 0, 1, -1, 1, -1};
 vector<int> d8y = {0, 0, 1, -1, 1, -1, -1, 1};
 vector<int> d4x = {0, 1, 0, -1}; // row n
 vector<int> d4y = {1, 0, -1, 0}; // column m
 
-// set up node (can be +level)
+vector<pi> node2[big];
+vector<int> dis(big,0);
+vector<bool> vis(big,0);
+
+//set up node (can be +level)
 struct NODE {
-   int i,j;
+   int u, v, ck;
 };
 
 queue<NODE> qn;
@@ -39,52 +43,38 @@ queue<NODE> qn;
 //--------------------- Works zone ------------------------
 
 void sol() {
-    int v, e, k, ans = 0;
-    vector<vector<int>> node(big, vector<int>());
-    cin >> v >> e >> k;
-    for(int i = 0; i < e; ++i) {
-        int n, m;
-        cin >> n >> m;
-        node[n].push_back(m);
-        node[m].push_back(n);
+    int n, m, t, cnt = 0;
+    cin >> n >> m >> t;
+    int node[n + 5][m + 5];
+    queue<NODE> q;
+    nloop(i) {
+        mloop(j) {
+            cin >> node[i][j];
+            if(node[i][j] == 1) 
+                q.push({i, j, 0});
+        }
     }
-    for(int i = 0; i < v; ++i) {
-        vector<int> dis(big, 0);
-        vector<bool> vis(big,0);
-        queue<int> q;
-        int cnt = 1;
-        q.push(i);
-        vis[i] = true; // visited
-        while(!q.empty()) {
-            int u = q.front();
-            q.pop();
-            if(dis[u] == k) break;
-            aloop(node[u]) {
-                if(!vis[itr]){
-                    vis[itr] = true;
-                    dis[itr] = dis[u] + 1;
-                    q.push(itr);
-                    cnt++;
-                }
+
+    while(!q.empty()){
+        int ux = q.front().u;
+        int uy = q.front().v;
+        int day = q.front().ck;
+        q.pop();
+        if(day > t) break;
+        
+        for(int i = 0; i < 4; ++i) {
+            int nx = ux + d4x[i];
+            int ny = uy + d4y[i];
+            if(nx >= 0 && ny >= 0 && nx < n && ny < m && node[nx][ny] == 0) {
+                node[nx][ny] = 1;
+                q.push({nx, ny, day + 1});
             }
         }
-        ans = max(ans, cnt);
+        cnt++;
     }
-
-    cout << ans;
-    
+    cout << cnt;
 }
-/*
 
-7 8 3
-0 6
-1 6
-1 5
-1 4
-2 3
-3 4
-4 5
-5 6*/
 int main() {
     stp();
     int tt = 1;

@@ -26,10 +26,10 @@ int start,finish;
 priority_queue<pi> pq;
 vector<int> d8x = {1, -1, 0, 0, 1, -1, 1, -1};
 vector<int> d8y = {0, 0, 1, -1, 1, -1, -1, 1};
-vector<int> d4x = {0, 1, 0, -1}; // row n
-vector<int> d4y = {1, 0, -1, 0}; // column m
+vector<int> d4x = {0, 1, 0, -1};
+vector<int> d4y = {1, 0, -1, 0};
 
-// set up node (can be +level)
+//set up node (can be +level)
 struct NODE {
    int i,j;
 };
@@ -38,53 +38,45 @@ queue<NODE> qn;
 
 //--------------------- Works zone ------------------------
 
-void sol() {
-    int v, e, k, ans = 0;
-    vector<vector<int>> node(big, vector<int>());
-    cin >> v >> e >> k;
-    for(int i = 0; i < e; ++i) {
-        int n, m;
-        cin >> n >> m;
-        node[n].push_back(m);
-        node[m].push_back(n);
-    }
-    for(int i = 0; i < v; ++i) {
-        vector<int> dis(big, 0);
-        vector<bool> vis(big,0);
-        queue<int> q;
-        int cnt = 1;
-        q.push(i);
-        vis[i] = true; // visited
-        while(!q.empty()) {
-            int u = q.front();
-            q.pop();
-            if(dis[u] == k) break;
-            aloop(node[u]) {
-                if(!vis[itr]){
-                    vis[itr] = true;
-                    dis[itr] = dis[u] + 1;
-                    q.push(itr);
-                    cnt++;
-                }
-            }
-        }
-        ans = max(ans, cnt);
-    }
+vector<int> dis(big,0);
+bool ck = false;
 
-    cout << ans;
-    
+void dfs(vector<vector<int>> &node, int u, int temp, vector<bool> &vis){
+    if(vis[u]) {ck = true; return ;}
+    vis[u] = true;
+    aloop(node[u]) {
+        if(itr == temp) continue;
+        dfs(node, itr, u, vis);
+    }
 }
-/*
 
-7 8 3
-0 6
-1 6
-1 5
-1 4
-2 3
-3 4
-4 5
-5 6*/
+void sol() {
+    int n;
+    cin >> n;
+    nloop(i) {
+        int v, e;
+        cin >> v >> e;
+        vector<vector<int>> node(v, vector<int>());
+        vector<bool> vis(v,0);
+
+        for(int i=0; i<e; i++) {
+            int x, y;
+            cin >> x >> y;
+            node[x].pb(y);
+            node[y].pb(x);
+        }
+
+        ck = false;
+        for(int i = 0; i < v; ++i) {
+            if(!vis[i]) dfs(node, i, -1, vis);
+        }
+        
+        
+        if(ck) cout << "YES" << endl;
+        else cout << "NO" << endl;
+    }
+}
+
 int main() {
     stp();
     int tt = 1;

@@ -23,68 +23,63 @@ const ll INF = 1e9+7;
 
 //--------------------- Variable zone ------------------------
 int start,finish;
-priority_queue<pi> pq;
+priority_queue<pi, vector<pi>, greater<pi>> pq;
 vector<int> d8x = {1, -1, 0, 0, 1, -1, 1, -1};
 vector<int> d8y = {0, 0, 1, -1, 1, -1, -1, 1};
-vector<int> d4x = {0, 1, 0, -1}; // row n
-vector<int> d4y = {1, 0, -1, 0}; // column m
+vector<int> d4x = {0, 1, 0, -1};
+vector<int> d4y = {1, 0, -1, 0};
+vector<vector<int>> node(big, vector<int>());
+vector<pi> node2[big];
+vector<int> dis(big,0);
+vector<bool> vis(big,0);
 
-// set up node (can be +level)
+//set up node (can be +level)
 struct NODE {
-   int i,j;
+   int u, v, w;
 };
 
 queue<NODE> qn;
 
 //--------------------- Works zone ------------------------
 
-void sol() {
-    int v, e, k, ans = 0;
-    vector<vector<int>> node(big, vector<int>());
-    cin >> v >> e >> k;
-    for(int i = 0; i < e; ++i) {
-        int n, m;
-        cin >> n >> m;
-        node[n].push_back(m);
-        node[m].push_back(n);
-    }
-    for(int i = 0; i < v; ++i) {
-        vector<int> dis(big, 0);
-        vector<bool> vis(big,0);
-        queue<int> q;
-        int cnt = 1;
-        q.push(i);
-        vis[i] = true; // visited
-        while(!q.empty()) {
-            int u = q.front();
-            q.pop();
-            if(dis[u] == k) break;
-            aloop(node[u]) {
-                if(!vis[itr]){
-                    vis[itr] = true;
-                    dis[itr] = dis[u] + 1;
-                    q.push(itr);
-                    cnt++;
-                }
-            }
-        }
-        ans = max(ans, cnt);
-    }
-
-    cout << ans;
-    
+bool cmp(pair<db, db> x, pair<db, db> y) {
+    db temp1 = (db)x.fs / (db)x.se;
+    db temp2 = (db)y.fs / (db)y.se;
+    return temp1 > temp2;
 }
-/*
 
-7 8 3
-0 6
-1 6
-1 5
-1 4
-2 3
-3 4
-4 5
-5 6*/
+void sol() {
+    db w,n,x;
+    cin >> w >> n;
+    vector<db> val;
+    vector<pair<db, db>> wei;
+    db nowwei = 0, ans = 0.0;
+    nloop(i) {
+        cin >> x; val.pb(x);
+    }
+    nloop(i) {
+        cin >> x; wei.push_back({val[i], x});
+    }
+
+    sort(all(wei), cmp);
+    
+    aloop(wei){
+        if(nowwei + itr.se <= w) {
+            nowwei += itr.se;
+            ans += itr.fs;
+        }
+        else {
+            db tem = w - nowwei;
+            ans += itr.fs*((db)tem / (db)itr.se);
+            break;
+        }
+    }
+
+    // cout << fixed << setprecision(4);
+    // cout << ans; 
+    printf("%.4f", ans); // a lot easy :)
+}
+
 int main() {
     stp();
     int tt = 1;

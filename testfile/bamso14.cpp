@@ -10,6 +10,8 @@ using namespace std;
 #define ending(x) if((x) == "x") break;
 #define nloop(x) for(int (x) = 0;(x) < n;(x)++)
 #define mloop(x) for(int (x) = 0;(x) < m;(x)++)
+#define cloop(x) for(int (x) = 0;(x) < c;(x)++)
+#define oloop(x) for(int (x) = 0;(x) < o;(x)++)
 #define aloop(x) for(auto itr : (x))
 #define all(x) (x).begin(), (x).end() 
 #define ig() cin.ignore(256, '\n');
@@ -41,26 +43,30 @@ queue<NODE> qn;
 
 //--------------------- Works zone ------------------------
 
-void cal(vector<string> &v, string temp, int num, int cnt, int n, int m, bool chk) {
-    if(num == n) { // counter complete
-        if(cnt == m || chk) cout << temp << endl; 
-    }
-    else {
-        if(cnt == m) chk = true; // complete bits
-        num++;
-        cnt++;
-
-        cal(v, temp + '0', num, 0, n, m, chk); 
-        cal(v, temp + '1', num, cnt, n, m, chk); 
-    }
-}
-
 void sol() {
-    int n ,m, cnt = 0;
-    string temp = "";
-    cin >> n >> m;
-    vector<string> v;
-    cal(v, temp, 0, cnt, n, m, false);
+    int m,n,o,c;
+    string direction[4];
+    cin >> m >> n >> o;
+    for(int i = 0; i < 4; i++){
+        cin >> direction[i];
+    }
+
+    cin >> c;
+    string command[c];
+    cloop(i){
+        cin >> command[i];
+    }
+
+    int arr[m][n][o];
+    memset(arr, 0, sizeof(arr));
+    nloop(i){
+        oloop(j){
+            // cin >> arr[i][j];
+        }
+    }
+
+
+
 }
 
 int main() {

@@ -17,74 +17,58 @@ using namespace std;
 #define fs first
 #define se second
 #define DEBUG 1
-const int big = 1e5+7;
+const int big = 1e6+7;
 const ll INF = 1e9+7;
 
 
 //--------------------- Variable zone ------------------------
 int start,finish;
-priority_queue<pi> pq;
+priority_queue<pi, vector<pi>, greater<pi>> pq;
 vector<int> d8x = {1, -1, 0, 0, 1, -1, 1, -1};
 vector<int> d8y = {0, 0, 1, -1, 1, -1, -1, 1};
-vector<int> d4x = {0, 1, 0, -1}; // row n
-vector<int> d4y = {1, 0, -1, 0}; // column m
+vector<int> d4x = {0, 1, 0, -1};
+vector<int> d4y = {1, 0, -1, 0};
+vector<vector<int>> node(big, vector<int>());
+vector<pi> node2[big];
+vector<int> dis(big,0);
+vector<bool> vis(big,0);
 
-// set up node (can be +level)
+//set up node (can be +level)
 struct NODE {
-   int i,j;
+   int u, v, w;
 };
 
 queue<NODE> qn;
 
 //--------------------- Works zone ------------------------
+int A[big];
 
 void sol() {
-    int v, e, k, ans = 0;
-    vector<vector<int>> node(big, vector<int>());
-    cin >> v >> e >> k;
-    for(int i = 0; i < e; ++i) {
-        int n, m;
-        cin >> n >> m;
-        node[n].push_back(m);
-        node[m].push_back(n);
+    int n, m, k;
+    cin >> n >> m >> k;
+    for(int i = 1 ;i <= n ;i++){
+        cin >> A[i];
+        A[i] += A[i - 1];
+        // cout << A[i] << " "; 
     }
-    for(int i = 0; i < v; ++i) {
-        vector<int> dis(big, 0);
-        vector<bool> vis(big,0);
-        queue<int> q;
-        int cnt = 1;
-        q.push(i);
-        vis[i] = true; // visited
-        while(!q.empty()) {
-            int u = q.front();
-            q.pop();
-            if(dis[u] == k) break;
-            aloop(node[u]) {
-                if(!vis[itr]){
-                    vis[itr] = true;
-                    dis[itr] = dis[u] + 1;
-                    q.push(itr);
-                    cnt++;
-                }
+    mloop(i) {
+        int L, r = n, ans = 0, money;
+        cin >> L >> money;
+        L++;
+        int l = L;
+        while(l <= r) {
+            int mid = (l + r) / 2;
+            if(A[mid] - A[L - 1] + (mid - L + 1) * k <= money) {
+                l = mid + 1 ,ans = A[mid] - A[L - 1];
             }
+            else r = mid - 1;
         }
-        ans = max(ans, cnt);
+
+        cout << ans << '\n';
     }
 
-    cout << ans;
-    
 }
-/*
 
-7 8 3
-0 6
-1 6
-1 5
-1 4
-2 3
-3 4
-4 5
-5 6*/
 int main() {
     stp();
     int tt = 1;

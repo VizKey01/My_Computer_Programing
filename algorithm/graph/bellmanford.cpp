@@ -26,65 +26,61 @@ int start,finish;
 priority_queue<pi> pq;
 vector<int> d8x = {1, -1, 0, 0, 1, -1, 1, -1};
 vector<int> d8y = {0, 0, 1, -1, 1, -1, -1, 1};
-vector<int> d4x = {0, 1, 0, -1}; // row n
-vector<int> d4y = {1, 0, -1, 0}; // column m
+vector<int> d4x = {0, 1, 0, -1};
+vector<int> d4y = {1, 0, -1, 0};
+vector<vector<int>> node(big, vector<int>());
+vector<int> dis(big, big);
+vector<bool> vis(big,0);
 
-// set up node (can be +level)
+//set up node (can be +level)
 struct NODE {
-   int i,j;
+   int i, j, wei;
 };
 
 queue<NODE> qn;
 
 //--------------------- Works zone ------------------------
+vector<NODE> edges;
 
 void sol() {
-    int v, e, k, ans = 0;
-    vector<vector<int>> node(big, vector<int>());
-    cin >> v >> e >> k;
-    for(int i = 0; i < e; ++i) {
-        int n, m;
-        cin >> n >> m;
-        node[n].push_back(m);
-        node[m].push_back(n);
+    int n, m;
+    cin >> n >> m >> start;
+    mloop(i) {
+        int x, y, w;
+        cin >> x >> y >> w;
+        edges.push_back({x,y,w});
     }
-    for(int i = 0; i < v; ++i) {
-        vector<int> dis(big, 0);
-        vector<bool> vis(big,0);
-        queue<int> q;
-        int cnt = 1;
-        q.push(i);
-        vis[i] = true; // visited
-        while(!q.empty()) {
-            int u = q.front();
-            q.pop();
-            if(dis[u] == k) break;
-            aloop(node[u]) {
-                if(!vis[itr]){
-                    vis[itr] = true;
-                    dis[itr] = dis[u] + 1;
-                    q.push(itr);
-                    cnt++;
-                }
-            }
+
+    dis[start] = 0;
+    for(int i = 0; i < n - 1; ++i) {
+        for(int j = 0; j < m; ++j) {
+            int u = edges[j].i;
+            int v = edges[j].j;
+            int w = edges[j].wei;
+
+            if(dis[u] != big && dis[u] + w < dis[v]) 
+                dis[v] = dis[u] + w;
         }
-        ans = max(ans, cnt);
+    }
+    //chk cycles
+    mloop(i) {
+        int u = edges[i].i;
+        int v = edges[i].j;
+        int w = edges[i].wei;
+        bool chk =  dis[u] + w < dis[v];
+        bool chk1 =  dis[u] != big;
+        if(dis[u] + w != big && dis[u] + w < dis[v]){
+            cout << -1;
+            return ;
+        }
     }
 
-    cout << ans;
-    
-}
-/*
+    nloop(i) {
+        cout << dis[i] << " ";
+    }
 
-7 8 3
-0 6
-1 6
-1 5
-1 4
-2 3
-3 4
-4 5
-5 6*/
+}
+
 int main() {
     stp();
     int tt = 1;
