@@ -1,0 +1,30 @@
+db.customer.deleteMany({ customer_id: 10001 });
+db.ordert.deleteMany({ customer_id: 10001 });
+db.order_line.deleteMany({ customer_id: 10001 });
+
+db.getCollection('customer').aggregate([
+  {
+    $lookup: {
+      from: "order",
+      localField: "customer_id",
+      foreignField: "customer_id",
+      as: "orders"
+    }
+  },
+  {
+    $lookup: {
+      from: "order_line",
+      localField: "customer_id",
+      foreignField: "customer_id",
+      as: "order_lines"
+    }
+  },
+  {
+    $project: {
+      _id: 0,
+      customer: "$$ROOT",
+      orders: 1,
+      order_lines: 1
+    }
+  }
+]);

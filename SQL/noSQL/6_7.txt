@@ -1,0 +1,70 @@
+db.getCollection('order').aggregate([
+  {
+    $unwind:
+      {
+        path: "$order_lines",
+      },
+  },
+  {
+    $group:
+      {
+        _id: "$order_lines.product_id",
+        totalorder: {
+          $sum: "$order_lines.ordered_quantity",
+        },
+        temp: {$sum: 1,
+        }, 
+      },
+  },
+  {
+    $lookup:
+      {
+        from: "product",
+        localField: "_id",
+        foreignField: "product_id",
+        as: "product",
+      },
+  },
+  {
+    $group:
+      {
+        _id: "$totalorder",
+        docs: {
+          $push: {
+            id: "$product.product_id",
+            name: "$product.product_name",
+          },
+        },
+      },
+  },
+  {
+    $sort:
+      {
+        _id: -1,
+        temp: -1,
+      },
+  },
+  {
+    $limit:
+      1,
+  },
+  {
+    $unwind:
+      {
+        path: "$docs",
+      },
+  },
+  {
+    $project:
+      {
+        _id: 0,
+        product_id: {
+          $arrayElemAt: ["$docs.id", 0],
+        },
+        product_description: {
+          $arrayElemAt: ["$docs.name", 0],
+        },
+      },
+  },
+]
+);
